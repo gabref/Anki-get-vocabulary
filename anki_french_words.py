@@ -10,3 +10,8 @@ chrome_options = Options()
 chrome_options.headless = True
 nav = webdriver.Chrome(options=chrome_options)
 
+# funções do webdriver
+nav.get(url)
+nav.find_element_by_xpath(codigoxpath).send_keys('escrita pra pesquisa')
+nav.find_element_by_xpath(codigoxpath).send_keys(Keys.ENTER)
+variavel = nav.find_element_by_xpath(codigoxpath).get_attribute('data-value')
