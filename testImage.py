@@ -37,6 +37,6 @@ def search_google(search_query):
         if count == 5:
             break
 
-    return images_url
+    browser.quit()
 
-items = search_google('dog')
+    return images_url
