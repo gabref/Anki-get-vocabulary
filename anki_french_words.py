@@ -1,9 +1,10 @@
+from genericpath import exists
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-import time
+# import time
 
 # para abrir o navegador 
-nav = webdriver.Chrome()
+# nav = webdriver.Chrome()
 
 # rodar navegador em segundo plano
 # from selenium.webdriver.chrome.options import Options
@@ -16,8 +17,24 @@ word = 'chien'
 # BAIXAR IMAGEM DO GOOGLE IMAGENS
 from testImage import search_google
 search_google(word)
+# usar imagem
+# deletar imagens
+def deletarImagens():
+    import os
+    count = 0
+    while True:
+        if count == 1:
+            count = 2
+        file_name = f'search{count+1}.jpg'
+        if os.path.exists(file_name):
+            os.remove(file_name)
+            count += 1
+        else:
+            print("Finished deleting Images")
+            break
 
-
+        
+deletarImagens()
 
 # nav.quit()
 
