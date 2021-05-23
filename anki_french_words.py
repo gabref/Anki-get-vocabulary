@@ -21,6 +21,9 @@ search_google(word)
 # deletar imagens
 def deletarImagens():
     import os
+    if not os.path.exists('my_folder'):
+        os.makedirs('my_folder')
+    os.rename('search2.jpg')
     count = 0
     while True:
         if count == 1:
@@ -33,7 +36,7 @@ def deletarImagens():
             print("Finished deleting Images")
             break
 
-        
+
 deletarImagens()
 
 # nav.quit()
