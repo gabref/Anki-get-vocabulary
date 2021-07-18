@@ -13,35 +13,13 @@ from simple_image_download import simple_image_download as simp
 # chrome_options.headless = True
 # nav = webdriver.Chrome(options=chrome_options)
 
-word = 'dog'
-
-# deletar imagens
-# def deletarImagens():
-    # import os
-    # if not os.path.exists('my_folder'):
-    #     os.makedirs('my_folder')
-    # os.rename('search2.jpg')
-    # count = 0
-    # while True:
-    #     if count == 1:
-    #         count = 2
-    #     file_name = f'search{count+1}.jpg'
-    #     if os.path.exists(file_name):
-    #         os.remove(file_name)
-    #         count += 1
-    #     else:
-    #         print("Finished deleting Images")
-    #         break
+word = ['felicidade',' happiness', 'chien','dog']
 
 # BAIXAR IMAGENS
 def baixarImagens(query):
     response = simp.simple_image_download
-    response().download(query, 1)
-
-# response = simp.simple_image_download
-# lst=['dog','cat']
-# for rep in lst:
-#     response().download(rep , 1)
+    for element in query:
+        response().download(element, 1)
     
 baixarImagens(word) # baixar imagens
 
