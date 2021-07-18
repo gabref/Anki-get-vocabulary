@@ -2,10 +2,10 @@ from genericpath import exists
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from simple_image_download import simple_image_download as simp 
-# import time
+import time
 
 # para abrir o navegador 
-# nav = webdriver.Chrome()
+nav = webdriver.Chrome()
 
 # rodar navegador em segundo plano
 # from selenium.webdriver.chrome.options import Options
@@ -13,17 +13,37 @@ from simple_image_download import simple_image_download as simp
 # chrome_options.headless = True
 # nav = webdriver.Chrome(options=chrome_options)
 
-word = ['felicidade',' happiness', 'chien','dog']
+words = [ 'happiness','girl','dog','boy']
+words_t = []
 
 # BAIXAR IMAGENS
 def baixarImagens(query):
     response = simp.simple_image_download
     for element in query:
         response().download(element, 1)
-    
-baixarImagens(word) # baixar imagens
 
-# nav.quit()
+# TRANSLATE WORDS
+def translate_words(query):
+    words_pairs = []
+    input_language = 'en'
+    output_language = 'fr'
+    for element in query:
+        url = f'https://translate.google.com/?sl={input_language}&tl={output_language}&text={element}&op=translate'
+        nav.get(url)
+        time.sleep(1)
+        all_spans = nav.find_elements_by_xpath("//span[@class='VIiyi']") #class for the translated words in google translator
+        for span in all_spans:
+            words_pairs.append(span.text)
+        words_t.append(words_pairs)
+    
+    print(words_t)
+
+# print(word_translated)
+    
+# baixarImagens(words) # baixar imagens
+translate_words(words)
+
+nav.quit()
 
 # funções do webdriver
 # nav.get(url)
