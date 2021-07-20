@@ -15,7 +15,14 @@ nav = webdriver.Chrome()
 # chrome_options.headless = True
 # nav = webdriver.Chrome(options=chrome_options)
 
-word = 'dog'
+# VARIAVEL COM O PATH PARA OS ARQUIVOS E CRIA DIRETÓRIO 'MEDIA' SE NÃO JÁ EXISTIR
+caminho = pathlib.Path().resolve()
+pathScript = str(caminho).replace('\\','/')
+dirname = caminho / 'media'
+if not dirname.exists():
+    os.mkdir(dirname)
+
+word = 'cat'
 
 # BAIXAR IMAGEM
 def baixarImagem(query):
@@ -64,7 +71,7 @@ def audio(query, translated_for_path):
         print(str(e))
 
     
-# baixarImagem(word) # baixar imagens
+baixarImagem(word) # baixar imagens
 # translate_word(word)
 # ipa(word) #translated word
 # audio(word, 'chien') # english + translation
