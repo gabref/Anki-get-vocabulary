@@ -1,8 +1,10 @@
-from genericpath import exists
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
 from simple_image_download import simple_image_download as simp 
+from selenium.webdriver.common.keys import Keys
+from selenium import webdriver
+from urllib import request
+import pathlib
 import time
+import os
 
 # para abrir o navegador 
 nav = webdriver.Chrome()
@@ -31,11 +33,41 @@ def translate_word(query):
     all_spans = nav.find_elements_by_xpath("//span[@class='VIiyi']") #class for the translated words in google translator
     for span in all_spans:
         word_pairs.append(span.text)
-    print(word_pairs)
+    return word_pairs
+
+#  IPA 
+def ipa(query):
+    url = 'https://easypronunciation.com/fr/practice-french-pronunciation-online'
+    nav.get(url)
+    time.sleep(1)
+    nav.find_element_by_xpath('//*[@id="custom_word_list"]').send_keys(query)
+    nav.find_element_by_xpath('//*[@id="submit"]').click()
+    time.sleep(1)
+    ipa_word_from_site = nav.find_element_by_xpath('//*[@id="npTitle"]').text
+    ipa_word = ipa_word_from_site.split('\n')[-1]
+    return ipa_word
+
+# AUDIO
+def audio(query, translated_for_path):
+    headers = {"User-Agent": "Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.86 Safari/537.36"}
+    url = f'https://www.collinsdictionary.com/dictionary/english-french/{query}'
+    nav.get(url)
+    link = nav.find_element_by_xpath('//*[@id="dog__1"]/div[4]/div[1]/div[1]/span[4]/a').get_attribute('data-src-mp3')
+    path = pathScript + '/media/' + translated_for_path + '.mp3'
+    try:
+        req = request.Request(link, headers=headers)
+        data = request.urlopen(req).read()
+        with open(path, 'wb') as f:
+            f.write(data)
+            f.close()
+    except Exception as e:
+        print(str(e))
 
     
-baixarImagem(word) # baixar imagens
-translate_word(word)
+# baixarImagem(word) # baixar imagens
+# translate_word(word)
+# ipa(word) #translated word
+# audio(word, 'chien') # english + translation
 
 nav.quit()
 
