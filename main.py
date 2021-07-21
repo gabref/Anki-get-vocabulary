@@ -23,7 +23,7 @@ dirname = caminho / 'media'
 if not dirname.exists():
     os.mkdir(dirname)
 
-word = 'boy'
+word = 'dog'
 
 # BAIXAR IMAGEM
 def baixarImagem(query):
@@ -99,22 +99,15 @@ def dealWithPaths():
             print("Directory '% s' can not be removed" % directory)
 
 word_t = translate_word(word)
+
+if isinstance(word_t, list):
+    word_t = word_t[1]
+
 ipa(word_t) #translated word
 baixarImagem(word) # baixar imagens
 audio(word) # english
 dealWithPaths()
-
 nav.quit()
-
-# funções do webdriver
-# nav.get(url)
-# nav.find_element_by_xpath(codigoxpath).send_keys('escrita pra pesquisa')
-# nav.find_element_by_xpath(codigoxpath).send_keys(Keys.ENTER)
-# variavel = nav.find_element_by_xpath(codigoxpath).get_attribute('data-value')
-# variavel = nav.find_element_by_xpath(codigoxpath).text
-# navegador.find_element_by_xpath('paraclicarnobotao').click()
-# nav.quit()
-# time.sleep(1)
 
 # import pandas as pd
 # tabela = pd.read_excel('nomearquivo')
