@@ -3,6 +3,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium import webdriver
 from urllib import request
 import pathlib
+import shutil
 import time
 import os
 
@@ -22,7 +23,7 @@ dirname = caminho / 'media'
 if not dirname.exists():
     os.mkdir(dirname)
 
-word = 'cat'
+word = 'boy'
 
 # BAIXAR IMAGEM
 def baixarImagem(query):
@@ -55,14 +56,15 @@ def ipa(query):
     return ipa_word
 
 # AUDIO
-def audio(query, translated_for_path):
+def audio(query):
     headers = {"User-Agent": "Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.86 Safari/537.36"}
     url = f'https://www.collinsdictionary.com/dictionary/english-french/{query}'
     nav.get(url)
-    link = nav.find_element_by_xpath('//*[@id="dog__1"]/div[4]/div[1]/div[1]/span[4]/a').get_attribute('data-src-mp3')
-    path = pathScript + '/media/' + translated_for_path + '.mp3'
+    link = nav.find_elements_by_class_name('audio_play_button')
+    audio_link = link[1].get_attribute('data-src-mp3')
+    path = pathScript + '/media/' + query + '.mp3'
     try:
-        req = request.Request(link, headers=headers)
+        req = request.Request(audio_link, headers=headers)
         data = request.urlopen(req).read()
         with open(path, 'wb') as f:
             f.write(data)
@@ -70,11 +72,37 @@ def audio(query, translated_for_path):
     except Exception as e:
         print(str(e))
 
-    
+def dealWithPaths():
+    # preparing variables 
+    source = str(pathlib.Path().resolve()) + '\simple_images'
+    destination = str(pathlib.Path().resolve()) + '\media'
+    dirs = os.listdir(source)
+    for dir in dirs: # or dirs = pathlib.Path().resolve().iterdir()
+        directory = os.path.join(source, dir)
+        files = pathlib.Path(directory).iterdir()
+        for file in files:
+            if file.is_file():
+                # rename file
+                name_file = file.stem
+                new_name = name_file[:-2] + file.suffix
+                file.rename(pathlib.Path(directory, new_name))
+                # move file
+                file_name = os.path.join(directory, new_name)
+                shutil.move(file_name, destination)
+    # remove directories
+    for dir in pathlib.Path(source).iterdir():
+        try:
+            os.rmdir(dir)
+            print("Directory '% s' has been removed successfully" % directory)
+        except OSError as error:
+            print(error)
+            print("Directory '% s' can not be removed" % directory)
+
+word_t = translate_word(word)
+ipa(word_t) #translated word
 baixarImagem(word) # baixar imagens
-# translate_word(word)
-# ipa(word) #translated word
-# audio(word, 'chien') # english + translation
+audio(word) # english
+dealWithPaths()
 
 nav.quit()
 
