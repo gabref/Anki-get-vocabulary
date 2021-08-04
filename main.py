@@ -5,6 +5,7 @@ from urllib import request
 import pathlib
 import shutil
 import time
+import csv
 import os
 
 # para abrir o navegador 
@@ -23,12 +24,16 @@ dirname = caminho / 'media'
 if not dirname.exists():
     os.mkdir(dirname)
 
-word = 'dog'
+# VARIÁVEIS DOS FILES
+english_words_file = r'D:\memor\Documents\Programming\Python\Projetos\Anki_Vocabulary\English_Words.csv'
+anki_words_file = r'D:\memor\Documents\Programming\Python\Projetos\Anki_Vocabulary\Anki_Words.csv'
 
 # BAIXAR IMAGEM
 def baixarImagem(query):
     response = simp.simple_image_download
     response().download(query, 1)
+    image_anki = f'<img src="{query}.jpeg">'
+    return image_anki
 
 # TRANSLATE WORD
 def translate_word(query):
@@ -41,19 +46,27 @@ def translate_word(query):
     all_spans = nav.find_elements_by_xpath("//span[@class='VIiyi']") #class for the translated words in google translator
     for span in all_spans:
         word_pairs.append(span.text)
+    if len(word_pairs) == 1: # makes sure that if the variable is a list with only 1 element, turns it to a string
+            word_pairs = str(word_pairs)
     return word_pairs
 
 #  IPA 
 def ipa(query):
+    # verify if 'query' is a list or not, if it is, select the masculin word
+    if isinstance(query, list):
+        query_word = query[1]
+    else:
+        query_word = query
     url = 'https://easypronunciation.com/fr/practice-french-pronunciation-online'
     nav.get(url)
     time.sleep(1)
-    nav.find_element_by_xpath('//*[@id="custom_word_list"]').send_keys(query)
+    nav.find_element_by_xpath('//*[@id="custom_word_list"]').clear()
+    nav.find_element_by_xpath('//*[@id="custom_word_list"]').send_keys(query_word)
     nav.find_element_by_xpath('//*[@id="submit"]').click()
     time.sleep(1)
     ipa_word_from_site = nav.find_element_by_xpath('//*[@id="npTitle"]').text
     ipa_word = ipa_word_from_site.split('\n')[-1]
-    return ipa_word
+    return ipa_word # .encode('utf-8')
 
 # AUDIO
 def audio(query):
@@ -71,6 +84,8 @@ def audio(query):
             f.close()
     except Exception as e:
         print(str(e))
+    audio_anki = f'[sound:{query}.mp3]'
+    return audio_anki
 
 def dealWithPaths():
     # preparing variables 
@@ -98,33 +113,56 @@ def dealWithPaths():
             print(error)
             print("Directory '% s' can not be removed" % directory)
 
-word_t = translate_word(word)
+# CONTA LINHAS ARQUIVO CSV
+def count_lines_csv():
+    with open(english_words_file, newline='') as csvfile:
+        reader = csv.reader(csvfile, delimiter=',', quoting=csv.QUOTE_ALL)
+        i = 0
+        for row in reader:
+            i += 1
+        csvfile.close()
+    return i
 
-if isinstance(word_t, list):
-    word_t = word_t[1]
+# FUNÇÃO QUE ESCREVE QUERY NO FILE
+def write_file(query):
+    with open(anki_words_file, 'a', newline='', encoding='utf-8') as csvfile:
+        writer = csv.writer(csvfile, delimiter=',')
+        writer.writerow(query)
+        csvfile.close()
 
-ipa(word_t) #translated word
-baixarImagem(word) # baixar imagens
-audio(word) # english
+# PROGRESS BAR
+def progress_bar(n, n0):
+    escala = 2
+    porcentagem = int(((n) / n0) * 100)
+    print('|' + '\u25A0' * int(porcentagem/escala) + '\u25A1' * int((100 - porcentagem)/escala) + '|', f'[ {porcentagem}% ]')
+
+def read_file():
+    query = []
+    len_csv = count_lines_csv()
+    with open(english_words_file, newline='') as csvfile:
+        reader = csv.reader(csvfile, delimiter=',', quoting=csv.QUOTE_ALL)
+        for row in reader:
+            for word in row:
+                query.append(word)
+                query.append(translate_word(word)) # pegar de word_t
+                query.append(ipa(query[1])) # selecionar ipa
+                query.append(baixarImagem(word)) # baixar imagens
+                query.append(audio(word))
+                nac = "'[],"
+                for i in nac:
+                    query[1] = str(query[1]).replace(i, '')
+                write_file(query)     
+                # progress bar stuff to update the command line in a dynamic way
+                if reader.line_num == 1:
+                    goback = ''
+                else:
+                    goback = "\033[F" * 5
+                print(f'{goback}\nLines added: {reader.line_num} / {len_csv}\nQuery: {query}')
+                progress_bar(reader.line_num, len_csv)
+                query.clear()
+        csvfile.close()
+        print('All the words were translated')
+
+read_file()
 dealWithPaths()
 nav.quit()
-
-# import pandas as pd
-# tabela = pd.read_excel('nomearquivo')
-# tabela.loc[linhas, colunas]
-# tabela.loc[tabela['nomeColuna'] == 'valor celulas da linha', 'coluna'] = float(uma variavel)
-# # Passo 2: atualizar o preço base reais -> cotação * preço base original
-# tabela_produtos['Preço Base Reais'] = tabela_produtos['Cotação'] * tabela_produtos['Preço Base Original']
-# # Passo 3: atualizar o preço final -> preço base reais * ajuste
-# tabela_produtos['Preço Final'] = tabela_produtos['Preço Base Reais'] * tabela_produtos['Ajuste']
-# tabela_produtos['Preço Final'] = tabela_produtos['Preço Final'].map("{:.2f}".format)
-# # EXPORTAR NOVA BASE DE DADOS
-# tabela_produtos.to_excel('Produtos Atualizados.xlsx', index=False)
-# # problemas de tipo de informação
-# tabela_clientes['TotalGasto'] = pd.to_numeric(tabela_clientes['TotalGasto'],errors="coerce")
-# # problemas de valores vazios
-# tabela_clientes = tabela_clientes.dropna(how='all', axis=1)
-# tabela_clientes = tabela_clientes.dropna(how='any', axis=0) # excluir linhas vazias
-# # itera os itens no arquivo csv para colocar na lista
-# for index, row in email_destino.iterrows():
-#     conjunto_emails.append(row['email'])
