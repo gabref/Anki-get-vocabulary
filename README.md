@@ -58,4 +58,5 @@ The main goal of this type of card is to remember how to say the word in the tar
 - [x] Remove Duplicates from English Words file
 - [x] Move all media to */media* folder
 - [ ] Deal with Exceptions
+- [ ] Add table of contents to README.md
 - [ ] Finish writing README.md
