@@ -15,7 +15,38 @@ For my deck, I wanted the following elements in the card:
 - Image
 - Sound
 
-![My Image Deck](https://discord.com/channels/@me/825418727150845972/873644338956075018)
+Now, following the ideias of [Gabriel Wyner](https://home.fluent-forever.com/#) for learning languages, we are going to create different types of cards in our anki using the elements the our python script will get. The types are the following:
+
+1. Comprehension
+2. Production
+3. Translation
+
+### 1 - Comprehension
+
+What’s this word mean? How do you pronounce it?
+A Comprehension card looks like this:
+
+![Comprehension Card](/images/comprehension_card.png)
+
+In the front of the card the word in the target language will show up, and you will have to try to remeber its meaning. The important thing is to remember the meaning, in the back of the card you will hear the audio of the word and have the IPA for the right pronunciation, but that's not the main goal here.
+
+### 2 - Production
+
+What’s the word for this picture/concept? Can you pronounce it?
+A Production card looks like this:
+
+![Production Card](/images/production_card.png)
+
+Here the main goal is to remember the word in the target language and the pronunciation as well. Pay attention to the audio and the IPA in the back of the card to evaluate yourself.
+
+### 3 - Translation
+
+How do you say this word in the target language?
+A Translation card looks like this:
+
+![Translation Card](/images/translation_card.png)
+
+The main goal of this type of card is to remember how to say the word in the target language, its translation from English.
 
 ### Tasks
 
