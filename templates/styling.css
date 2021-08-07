@@ -1,0 +1,38 @@
+.card {
+    font-family: arial;
+    font-size: 40px;
+    text-align: center;
+    color: black;
+    background-color: white;
+  }
+  
+  .mobile .card {font-size: 27px}
+  
+  div {display: inline-block; max-width: 600px;}
+  
+  .target{
+    font-weight: bold;
+    color: #FF5733;
+  }
+  
+  .image{
+    height: 100px;
+  }
+  
+  img {
+    height: 300px
+  }
+  
+  .mobile .image{
+    height: 50px
+  }
+  
+  .ipa {
+    margin-top: 20px;
+    margin-bottom: 50px
+  }
+  
+  .english {
+    font-size: 15px;
+    margin-top: 20px
+  }
