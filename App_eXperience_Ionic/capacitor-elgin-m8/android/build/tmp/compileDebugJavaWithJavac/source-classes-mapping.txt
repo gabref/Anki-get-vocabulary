@@ -1,0 +1,12 @@
+com/elgin/m8/BuildConfig.java
+ com.elgin.m8.BuildConfig
+com/elgin/m8/m8PluginPlugin.java
+ com.elgin.m8.m8PluginPlugin
+ com.elgin.m8.m8PluginPlugin$1
+com/elgin/m8/Paygo.java
+ com.elgin.m8.Paygo
+ com.elgin.m8.Paygo$1
+com/elgin/m8/m8Plugin.java
+ com.elgin.m8.m8Plugin
+com/elgin/m8/Printer.java
+ com.elgin.m8.Printer
