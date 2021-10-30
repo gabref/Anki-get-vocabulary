@@ -1,76 +1,68 @@
-from genericpath import exists
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-from simple_image_download import simple_image_download as simp 
+import csv
+import random
 import time
 
-# para abrir o navegador 
-nav = webdriver.Chrome()
+sequencia_palavras = [['chienne','chien'],'garçon',['chatte','chat'], 'gateaux',' eau','noeuf','oeuf']
+palavra_ipa = 'shiên'
+english_words_file = r'D:\memor\Documents\Programming\Python\Projetos\Anki_Vocabulary\English_Words.csv'
+anki_words_file = r'D:\memor\Documents\Programming\Python\Projetos\Anki_Vocabulary\Anki_Words.csv'
 
-# rodar navegador em segundo plano
-# from selenium.webdriver.chrome.options import Options
-# chrome_options = Options()
-# chrome_options.headless = True
-# nav = webdriver.Chrome(options=chrome_options)
+def translate_word(query):
+    word_t = random.choice(query)
+    return word_t
 
-words = [ 'happiness','girl','dog','boy']
-words_t = []
+def ipa():
+    return palavra_ipa
 
-# BAIXAR IMAGENS
-def baixarImagens(query):
-    response = simp.simple_image_download
-    for element in query:
-        response().download(element, 1)
+def imagem(query):
+    return str(query) + '.jpeg'
 
-# TRANSLATE WORDS
-def translate_words(query):
-    words_pairs = []
-    input_language = 'en'
-    output_language = 'fr'
-    for element in query:
-        url = f'https://translate.google.com/?sl={input_language}&tl={output_language}&text={element}&op=translate'
-        nav.get(url)
-        time.sleep(1)
-        all_spans = nav.find_elements_by_xpath("//span[@class='VIiyi']") #class for the translated words in google translator
-        for span in all_spans:
-            words_pairs.append(span.text)
-        words_t.append(words_pairs)
-    
-    print(words_t)
+def audio(query):
+    return str(query) + '.mp3'
 
-# print(word_translated)
-    
-# baixarImagens(words) # baixar imagens
-translate_words(words)
+def count_lines_csv():
+    with open(english_words_file, newline='') as csvfile:
+        reader = csv.reader(csvfile, delimiter=',', quoting=csv.QUOTE_ALL)
+        i = 0
+        for row in reader:
+            i += 1
+        csvfile.close()
+    return i
 
-nav.quit()
+def read_file():
+    query = []
+    len_csv = count_lines_csv()
+    with open(english_words_file, newline='') as csvfile:
+        reader = csv.reader(csvfile, delimiter=',', quoting=csv.QUOTE_ALL)
+        for row in reader:
+            for word in row:
+                query.append(word)
+                query.append(translate_word(sequencia_palavras)) # pegar de word_t
+                query.append(ipa()) # selecionar ipa
+                query.append(imagem(word))
+                query.append(audio(word))
+                write_file(query)     
+                # progress bar stuff
+                if reader.line_num == 1:
+                    goback = ''
+                else:
+                    goback = "\033[F" * 4
+                print(f'{goback}\nLines added: {reader.line_num} / {len_csv}\nQuery: {query}')
+                progress_bar(reader.line_num, len_csv)
+                query.clear()
+                time.sleep(0.5)
+        csvfile.close()
+        print('All the words were translated')
 
-# funções do webdriver
-# nav.get(url)
-# nav.find_element_by_xpath(codigoxpath).send_keys('escrita pra pesquisa')
-# nav.find_element_by_xpath(codigoxpath).send_keys(Keys.ENTER)
-# variavel = nav.find_element_by_xpath(codigoxpath).get_attribute('data-value')
-# variavel = nav.find_element_by_xpath(codigoxpath).text
-# navegador.find_element_by_xpath('paraclicarnobotao').click()
-# nav.quit()
-# time.sleep(1)
+def write_file(query):
+    with open(anki_words_file, 'a', newline='') as csvfile:
+        writer = csv.writer(csvfile, delimiter=',')
+        writer.writerow(query)
+        csvfile.close()
 
-# import pandas as pd
-# tabela = pd.read_excel('nomearquivo')
-# tabela.loc[linhas, colunas]
-# tabela.loc[tabela['nomeColuna'] == 'valor celulas da linha', 'coluna'] = float(uma variavel)
-# # Passo 2: atualizar o preço base reais -> cotação * preço base original
-# tabela_produtos['Preço Base Reais'] = tabela_produtos['Cotação'] * tabela_produtos['Preço Base Original']
-# # Passo 3: atualizar o preço final -> preço base reais * ajuste
-# tabela_produtos['Preço Final'] = tabela_produtos['Preço Base Reais'] * tabela_produtos['Ajuste']
-# tabela_produtos['Preço Final'] = tabela_produtos['Preço Final'].map("{:.2f}".format)
-# # EXPORTAR NOVA BASE DE DADOS
-# tabela_produtos.to_excel('Produtos Atualizados.xlsx', index=False)
-# # problemas de tipo de informação
-# tabela_clientes['TotalGasto'] = pd.to_numeric(tabela_clientes['TotalGasto'],errors="coerce")
-# # problemas de valores vazios
-# tabela_clientes = tabela_clientes.dropna(how='all', axis=1)
-# tabela_clientes = tabela_clientes.dropna(how='any', axis=0) # excluir linhas vazias
-# # itera os itens no arquivo csv para colocar na lista
-# for index, row in email_destino.iterrows():
-#     conjunto_emails.append(row['email'])
+def progress_bar(n, n0):
+    escala = 2
+    porcentagem = int(((n) / n0) * 100)
+    print('|' + '\u25A0' * int(porcentagem/escala) + '\u25A1' * int((100 - porcentagem)/escala) + '|', f'[ {porcentagem}% ]')
+
+read_file()
