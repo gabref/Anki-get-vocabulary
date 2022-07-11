@@ -23,6 +23,8 @@ Now, following the ideias of [Gabriel Wyner](https://home.fluent-forever.com/#) 
 
 ### 1 - Comprehension
 
+@gabref
+
 What’s this word mean? How do you pronounce it?
 A Comprehension card looks like this:
 
